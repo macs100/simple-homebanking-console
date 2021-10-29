@@ -1,0 +1,6 @@
+{
+  "nombreBanco": "Banco Del Sol",
+  "origenMovimientos": "./db/Movimientos.json",
+  "origenUsuarios": "./db/Clientes.json",
+  "debug": true
+}
