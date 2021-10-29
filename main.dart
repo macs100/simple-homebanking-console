@@ -2,6 +2,8 @@ import './libraries/Banco.dart';
 import './libraries/Terminal.dart';
 import './libraries/Exceptions/BancoExceptions.dart';
 
+/// Homa mundo
+
 void main() {
 
   ///banco es el nombre del objeto banco de la clase Banco creada con la función Banco()
