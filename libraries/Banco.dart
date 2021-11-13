@@ -1,7 +1,6 @@
 import 'dart:convert';
 import './Exceptions/BancoExceptions.dart';
 import './Exceptions/MovimientosExceptions.dart';
-import './Exceptions/ClientesExceptions.dart';
 import '../vendor/file_controller/FileController.dart';
 import '../vendor/file_controller/FileControllerException.dart';
 

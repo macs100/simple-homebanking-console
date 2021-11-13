@@ -8,14 +8,12 @@ import './Exceptions/ClientesExceptions.dart';
 class Terminal {
 
   ///numero de terminal, para saber dónde se hace la transferencia.
-  num _idTerminal = 0;
   Banco _banco = Banco();
   Cliente? _cliente;
   
   ///constructor del terminal
   Terminal(Banco banco){
     
-    _idTerminal = 1;//crearTerminal();
     _banco = banco;
 
   }
@@ -90,7 +88,6 @@ class Terminal {
     }   
   }
 
-  
   /// Inicio de sesión.
   /// puedo ir como anónimo a depositar a la cuenta de otra persona o puedo ir y logearme.
   Cliente? logIn() {
@@ -102,14 +99,14 @@ class Terminal {
         String contrasena = _consulta('Ingrese su contraseña:');
         cliente = Cliente(nombreUsuario, contrasena);
         logged = true;
-      } on LoginClientesException catch (e) {
+      } on LoginClientesException {
 
         _danger("El usuario y/o contraseña no son válidos.");
         
         _titulo('¿Qué desea hacer?');
         _opcion(1, 'Volver a intentar');
         _opcion(2, 'Salir');
-        
+
         if (_elegirOpcionInt(2) == 2) {
           throw ExitTerminalException('');
         }
