@@ -7,8 +7,6 @@ class Cliente {
 
   num? _nroCuenta;
   String? _nombre;
-  // ignore: unused_field
-  String? _contrasena;
 
   static List<dynamic> _usuarios = [];
   
@@ -21,18 +19,13 @@ class Cliente {
     for (int i = 0; i < usuariosValidos.length; i++) {
       if (usuariosValidos[i]['nombre'] == nombreUsuario && usuariosValidos[i]['contrasena'] == contrasena) {
         _nombre = nombreUsuario;
-        _contrasena = contrasena;
-        _nroCuenta = _nroCuenta;
+        _nroCuenta = usuariosValidos[i]['nroCuenta'];
       }
     }
-    if (nombreUsuario == 'invitado' && contrasena == 'abcdefghijklmnopqrstuvwxyz'){
-      _nombre = 'invitado';
-      _contrasena = 'abcdefghijklmnopqrstuvwxyz';
-      _nroCuenta = 3;
-    }else if (_nroCuenta == null) {//(!_nroCuenta)
+
+    if (_nroCuenta == null) {
       throw LoginClientesException('Usuario y/o contraseña no encontrados.');
     }
-
   }
 
   static void _cargarUsuarios() {
@@ -79,51 +72,33 @@ class Cliente {
     return nroCuenta;    
   }
 
-  bool verificaExistencia(num numero){
-
-    for(int i = 0; i < _usuarios.length; i++){
-
-      if(_usuarios[i]["nroCuenta"] == numero){
+  static bool verificaExistencia(num numero) {
+    _cargarUsuarios();
+    for (int i = 0; i < _usuarios.length; i++) {
+      if (_usuarios[i]["nroCuenta"] == numero) {
         return true;
       }
-
     }
     return false;
-
   }
 
+  ///retorna el nombre del cliente
   String getNombre() => _nombre!;
 
-  /// Muestra al usuario su historial de transacciones
-  getHistorial() {}
-
-  /// El usuario crea un pago que debe tener un remitente,un monto y un receptor. 
-  nuevoPago() {}
-
-  String? conseguirNombre(num numeroDeCuenta){
-
-    for(int i = 0; i < _usuarios.length; i++){
-      if (_usuarios[i]['nroCuenta'] == numeroDeCuenta){
+  static String? conseguirNombre(num numeroDeCuenta) {
+    _cargarUsuarios();
+    for (int i = 0; i < _usuarios.length; i++) {
+      if (_usuarios[i]['nroCuenta'] == numeroDeCuenta) {
         return _usuarios[i]['nombre'];
       }
     }
-
   }
-
-  ///
+  
   num getNroCuenta() => _nroCuenta!;
 
-  /// ???
-  nuevaTransferencia() {}
-
-
   static num ultimoNumeroDeCuenta() {
-
     _cargarUsuarios();
-    //_usuarios
     num ultimaCuenta = _usuarios.length;
     return ultimaCuenta;
   }
-
-
 }

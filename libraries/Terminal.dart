@@ -7,16 +7,10 @@ import './Exceptions/ClientesExceptions.dart';
 
 class Terminal {
 
-
-  /// regex101.com
-  /// expresiones regulares
-
-
   ///numero de terminal, para saber dónde se hace la transferencia.
   num _idTerminal = 0;
   Banco _banco = Banco();
   Cliente? _cliente;
-  
   
   ///constructor del terminal
   Terminal(Banco banco){
@@ -26,13 +20,11 @@ class Terminal {
 
   }
 
-
   /// inicio de ejecución.
   void run() {
 
     try {
       bienvenida();
-      
       switch (inicio()) {
         case 1: 
           runCliente();
@@ -66,10 +58,8 @@ class Terminal {
 
   /// Muestra por pantalla un mensaje de bienvenida.
   void bienvenida() {
-
     _info('TE DAMOS LA BIENVENIDA A');
     _info(_banco.getNombre());
-
   }
 
   void runCliente() {
@@ -89,21 +79,15 @@ class Terminal {
           extraerEfectivo();
           break;
         case 4://sin codear
-          //depositarCheque();
-          //break;
+          depositarEfectivo();
+          break;
         case 5://sin codear
           realizarTransferencia();
           break;
-        case 6://sin codear
-          //configurarCuenta();
-          //break;
-        case 7:
-          //por ahora nada
-        case 8:
-          throw ExitTerminalException('error');
+        case 6:
+          throw ExitTerminalException('error');  
       }
     }   
-
   }
 
   
@@ -118,7 +102,7 @@ class Terminal {
         String contrasena = _consulta('Ingrese su contraseña:');
         cliente = Cliente(nombreUsuario, contrasena);
         logged = true;
-      } on LoginClientesException catch (err) {
+      } on LoginClientesException catch (e) {
 
         _danger("El usuario y/o contraseña no son válidos.");
         
@@ -147,12 +131,12 @@ class Terminal {
 
 
     num? cantTelefonos;
-    do{
+    do {
       cantTelefonos = num.tryParse(_consulta('cuantos numeros de teléfono posee?'));
     } while (cantTelefonos == null);
     List<num> telefonos = [];
     num? numeroActual;
-    for (int i=0; i<cantTelefonos; i++){
+    for (int i=0; i<cantTelefonos; i++) {
       do {
         numeroActual = num.tryParse(_consulta('ingrese su numero de teléfono'));
       } while (numeroActual == null);
@@ -166,61 +150,42 @@ class Terminal {
 
   
 
-  void runInvitado(){
+  void runInvitado() {
 
-    invitado();
-    do{
-      _info('deséa depositar efectivo?');
+    do {
+      _info('¿Desea depositar efectivo?');
       _info('1. Si');
       _info('2. No');
-      switch(num.tryParse(_consulta(''))){
+      
+      switch (_elegirOpcionInt(2)) {
         case 1:
           realizarDepositoInvitado();
           break;
         case 2:
-          if(_consulta('deséa salir del modo invitado? \n 1.Si \n 2.No') == 1){
+          if(_consulta('¿Desea salir del modo invitado? \n 1.Si \n 2.No') == '1') {///crear función "confirmar()" devuelve true si confirmó
             throw ExitTerminalException('');
           } 
           break;
       }
-    }while(true);
+    } while(true);
     
 
-  }
-
-  void invitado() {
-    
-    try{
-      _cliente = Cliente('invitado', 'abcdefghijklmnopqrstuvwxyz');
-    } catch (err) {
-      print(err);
-    }
-  }
-  
-
-  void getId() {
-    _info( "$_idTerminal" );
-  }
+  } 
   
   /// El usuario indica lo que desea hacer.
   int seleccionOpcion() {
 
     _titulo('¿Qué desea hacer?');
     int i = 1;
-    _opcion(i++, 'Consulta de saldo');
-    _opcion(i++, 'Depositar efectivo');
-    _opcion(i++, 'Extraer efectivo');
-    _opcion(i++, 'Depositar un cheque');
-    _opcion(i++, 'Realizar una transferencia');
-    _opcion(i++, 'configurar cuenta.');
-    _opcion(i++, '');
-    _opcion(i++, 'Salir');//9
+    _opcion(i++, 'Consulta de saldo');//1
+    _opcion(i++, 'Depositar efectivo');//2
+    _opcion(i++, 'Extraer efectivo');//3
+    _opcion(i++, 'Depositar un cheque');//4
+    _opcion(i++, 'Realizar una transferencia');//5
+    _opcion(i++, 'Salir');//6
 
     return _elegirOpcionInt(9);
-
-    ///depositar cheque, depositar efectivo, retirar, 
   }
-  /// Alt+flechas mueve un renglón
 
   /// Se le indica en pantalla el saldo actual al usuario.
   void consultarSaldo() {
@@ -240,27 +205,21 @@ class Terminal {
     String fecha = '';
     String causa = '';
     
-    try{
+    try {
       _cliente!.getNroCuenta();
-    } catch(e){
+    } catch(e) {
       _consulta('a qué numero de cuenta deséa enviar el dinero?');
     }
       monto = _consultaNumerica('cuánto dinero desea ingresar?', 1);
-    
       causa = _consulta('cual es la causa de la transacción?');
 
-    try{
+    try {
       monto = _banco.nuevoMovimiento(0, _cliente!.getNroCuenta(), monto, fecha, causa);
-      //numeroDeCuentaOrigen, numeroDeCuentaDestino, monto, String fecha, String causa
     } catch(err) {
       print(err);
     }
-    //monto = Banco.nuevoMovimiento(0, _cliente.getNroCuenta(), monto, fecha, causa);
-    //num numeroDeCuentaOrigen, num numeroDeCuentaDestino, num monto, String fecha, String causa
     _success('depósito realizado con éxito.');
     _success('        Monto: $monto');
-
-    //banco.setSaldo(_consulta("Cuánto dinero desea ingresar?")); 
   }
 
   void extraerEfectivo() {
@@ -268,147 +227,105 @@ class Terminal {
     num monto;
     String fecha = '';
     String causa = '';
-
     monto = _consultaNumerica('cuánto dinero desea extraer?', 1);
-    
     num cuentaCliente = _cliente!.getNroCuenta();
     
-    if (monto <= _banco.getSaldo(cuentaCliente)){
-      
+    if (monto <= _banco.getSaldo(cuentaCliente)) {
       causa = _consulta('cual es la causa de la extracción?');
-      
-      try{
+      try {
         monto = _banco.nuevoMovimiento(_cliente!.getNroCuenta(), 0, monto, fecha, causa);
-        //numeroDeCuentaOrigen, numeroDeCuentaDestino, monto, String fecha, String causa
       } catch(err) {
         print(err);
       }
-      //monto = Banco.nuevoMovimiento(0, _cliente.getNroCuenta(), monto, fecha, causa);
-      //num numeroDeCuentaOrigen, num numeroDeCuentaDestino, num monto, String fecha, String causa
       _success('extracción realizada con éxito.');
       _success('         Monto: $monto');
     }
-
-
-    //banco.setSaldo(_consulta("Cuánto dinero desea ingresar?")); 
   }
 
-    void realizarDepositoInvitado() {
+  void realizarDepositoInvitado() {
 
     num monto;
     String fecha = '';
     String causa = '';
-
-      monto = _consultaNumerica('cuánto dinero desea depositar?', 1);
-    
-    num cuentaCliente = 3;
-    if (monto > 0){
-      _info('cuál es la causa del depósito?');
+    monto = num.tryParse(_consulta('¿Cuánto dinero desea depositar?')) ?? 0;
+    if (monto > 0) {
+      _info('¿Cuál es el motivo del depósito?');
       causa = _consulta('');
       bool repetir = true;
       num nroCuentaDestino;
       String nombreCuentaDestino;
       num seRepite = 0;
-      do{
-        
-        do{
-          nroCuentaDestino = _consultaNumerica('indique el nro de cuenta donde desea depositar el dinero', 1);
-        } while(!_cliente!.verificaExistencia(nroCuentaDestino));
-        
-        nombreCuentaDestino = _cliente!.conseguirNombre(nroCuentaDestino)!;
-
-        seRepite = num.tryParse(_consulta('desea realizar la transferencia a $nombreCuentaDestino?\n 1.Si \n 2.No'))!;
-        
-        if(seRepite == 1){
-
+      do {
+        do {
+          nroCuentaDestino = num.tryParse(_consulta('Indique el nro de cuenta donde desea depositar el dinero')) ?? 0;
+        } while(!Cliente.verificaExistencia(nroCuentaDestino));
+        nombreCuentaDestino = Cliente.conseguirNombre(nroCuentaDestino)!;
+        seRepite = num.tryParse(_consulta('¿Desea realizar la transferencia a $nombreCuentaDestino?\n 1.Si \n 2.No'))!;
+        if (seRepite == 1) {
           repetir = false;
           break;
-
         } else {
-
           continue;
-
         }
-        
-      } while(repetir!=true);
+      } while (!repetir);
 
-      try{
-        monto = _banco.nuevoMovimiento(3, nroCuentaDestino, monto, fecha, causa);
-
+      try {
+        monto = _banco.nuevoMovimiento(0, nroCuentaDestino, monto, fecha, causa);
       } catch(err) {
         print(err);
       }
-      //monto = Banco.nuevoMovimiento(0, _cliente.getNroCuenta(), monto, fecha, causa);
-      //num numeroDeCuentaOrigen, num numeroDeCuentaDestino, num monto, String fecha, String causa
-      _success('depósito realizado con éxito a $nombreCuentaDestino.');
+      _success('Depósito realizado con éxito a $nombreCuentaDestino.');
       _success('           Monto: $monto');
     }
 
   }
 
-
+  /// 
   void realizarTransferencia() {
-
     num monto;
     String fecha = '';
     String causa = '';
 
-      monto = _consultaNumerica('cuánto dinero desea enviar?', 1);
+    monto = _consultaNumerica('cuánto dinero desea enviar?', 1);
     
     num cuentaCliente = _cliente!.getNroCuenta();
-    if (monto <= _banco.getSaldo(cuentaCliente)){
-
+    if (monto <= _banco.getSaldo(cuentaCliente)) {
       causa = _consulta('cual es la causa de la transferencia?');
 
       bool repetir = true;
       num nroCuentaDestino;
       String nombreCuentaDestino;
       num seRepite = 0;
-      do{
+      do {
         
-        do{
+        do {
           nroCuentaDestino = _consultaNumerica('indique el nro de cuenta de la persona a la que quiere realizar la transacción', 1);
-        } while(!_cliente!.verificaExistencia(nroCuentaDestino));
+        } while (!Cliente.verificaExistencia(nroCuentaDestino));
         
-        nombreCuentaDestino = _cliente!.conseguirNombre(nroCuentaDestino)!;
+        nombreCuentaDestino = Cliente.conseguirNombre(nroCuentaDestino)!;
 
         seRepite = num.tryParse(_consulta('desea realizar la transferencia a $nombreCuentaDestino?\n 1.Si \n 2.No'))!;
         
-        if(seRepite == 1){
-
+        if (seRepite == 1) {
           repetir = false;
           break;
-
         } else {
-
           continue;
-
         }
         
-      } while(repetir!=true);
+      } while (!repetir);
 
-      try{
+      try {
         monto = _banco.nuevoMovimiento(_cliente!.getNroCuenta(),nroCuentaDestino , monto, fecha, causa);
-
       } catch(err) {
         print(err);
       }
-      //monto = Banco.nuevoMovimiento(0, _cliente.getNroCuenta(), monto, fecha, causa);
-      //num numeroDeCuentaOrigen, num numeroDeCuentaDestino, num monto, String fecha, String causa
       _success('extracción realizada con éxito.');
       _success('         Monto: $monto');
     }
 
   }
 
-
-  /// El usuario retira en efectivo cierta cantidad de dinero de su cuenta.
-  void retirarEfectivo() {
-  }
-
-  /// El usuario envía cierta cantidad de dinero a otro.
-  void transferir() {
-  }
 
   /// COMPONENTES VISUALES
   void _titulo(String titulo) {
@@ -457,23 +374,24 @@ class Terminal {
     num dineroCliente = _banco.getSaldo(_cliente!.getNroCuenta());
 
     num? monto = 0;
-    do{
+    do {
       monto = num.tryParse(stdin.readLineSync()!)!;
-      if (monto <= 0){
+      if (monto <= 0) {
         _warning('el monto ingresado no es válido');
       } else {
-        if(tipo == 0) {//tipo 0 es para transacciones, tipo 1 es para depósitos
-          if(monto > dineroCliente) {
+        if (tipo == 0) {//tipo 0 es para transacciones, tipo 1 es para depósitos
+          if (monto > dineroCliente) {
             _warning('el monto ingresado es mayor al saldo del usuario');
             monto = null;
           } else {
             return monto;
           }
-        } else if (tipo == 1){
+        } else if (tipo == 1) {
           return monto;
         }
       }
-    }while (monto == null);
+    } while (monto == null);
+    
     return monto;
   }
 
@@ -518,9 +436,6 @@ class Terminal {
   }
 
 }
-
-
-
 
 /****************
 Black:   \x1B[30m

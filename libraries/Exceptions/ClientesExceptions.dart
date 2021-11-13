@@ -1,16 +1,12 @@
 class ClientesException implements Exception {
-
   String _message = '';
-
   ClientesException([String message = 'Error']) {
     this._message = message;
   }
-  
   @override
   String toString() {
     return _message;
   }
-
 }
 
 class LoginClientesException extends ClientesException {

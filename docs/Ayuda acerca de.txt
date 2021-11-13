@@ -1,0 +1,19 @@
+es buena costumbre tener el nombre de la clase en el nombre de la exception.
+
+regex101.com
+expresiones regulares
+
+Alt+arriba y abajo mueve un renglón
+Alt + izq/der avanza y retrocede en lo que hice.
+
+
+
+
+
+
+
+
+
+
+
+

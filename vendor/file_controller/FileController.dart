@@ -21,9 +21,7 @@ class FileController {
     File file = File(filepath);
     file.writeAsStringSync('$content');
   }
-
-  ///que el banco pueda usar file controller y obtener el contenido del archivo.
-
+  
   void addToFile(String filepath, String content) {
     File file = File(filepath);
     String initialContent = file.readAsStringSync();
@@ -33,7 +31,4 @@ class FileController {
       file.writeAsStringSync('$initialContent\n$content');
     }
   }
-
-  ///File historialSuma = File ('./historialSuma.txt');
-
 }
