@@ -24,8 +24,6 @@ class FatalBancoException extends BancoException {
 //hasta el main
 
 class CierreBancoException extends BancoException {
-
   CierreBancoException(String message) : super(message);
-
 }
 

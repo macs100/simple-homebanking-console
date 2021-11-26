@@ -8,13 +8,11 @@ void main() {
   try {
     banco = Banco();
     Terminal terminal = Terminal(banco);
-    try {
-      while (true) {   //lleva a cabo todo el proceso llevado a cabo por la terminal hasta que se le 
-        terminal.run();//indique apagarse
-      }
-    } on CierreBancoException {
-      print('SERVICIO FINALIZADO');
-    } 
+    while (true) {   //lleva a cabo todo el proceso llevado a cabo por la terminal hasta que se le 
+      terminal.run();//indique apagarse
+    }
+  } on CierreBancoException {
+    print('SERVICIO FINALIZADO');
   } on FatalBancoException catch(err) {
     print("Hubo un error:");
     print(err);

@@ -19,34 +19,30 @@ class Banco {
   /// Objeto file controller
   FileController fileController = FileController();
 
-  /// Cargar configuración inicial del banco, iniciar, constructor.
+  /// Cargar configuración inicial del banco, iniciar, constructor. Levanta el nombre y lo prepara 
+  /// para funcionar
   Banco() {
-
     String configBancoJSON;
     try {
       configBancoJSON = this.fileController.getDataFromFile('./env/config.json');
     } on FileControllerException catch(err) {
       throw FatalBancoException(err.toString());
     }
-    
     Map<String, dynamic> configBanco;
     try {
       configBanco = jsonDecode(configBancoJSON);
     } catch (err) {
       throw FatalBancoException(err.toString());
     }
-    
     this._nombre = configBanco['nombreBanco'];
     this._origenMovimientos = configBanco['origenMovimientos'];
     FileController fileController = FileController();
     String _movimientosJSON;
-
     try{
       _movimientosJSON = fileController.getDataFromFile(_origenMovimientos!);
     } on FileControllerException {
       throw FatalBancoMovimientosException();
     }
-    
     try {
       _movimientos = jsonDecode(_movimientosJSON);
     } catch (err) {
