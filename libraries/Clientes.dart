@@ -28,6 +28,8 @@ class Cliente {
     }
   }
 
+
+  ///guarda los usuarios en  la variable '_usuarios' de esta clase.
   static void _cargarUsuarios() {
     if (_usuarios.isEmpty) {
       FileController fileController = FileController();
@@ -52,9 +54,9 @@ class Cliente {
     }
   }
 
+  ///Crea y registra un nuevo cliente. Recibe todos los datos del cliente.
   static num nuevoCliente(String nombre, String contrasena, String fechaNacimiento, List<num> telefonos) {
     _cargarUsuarios();
-
     num nroCuenta = ultimoNumeroDeCuenta();
 
     _usuarios.add({
@@ -66,12 +68,11 @@ class Cliente {
     });
 
     FileController fileController = FileController();
-
     fileController.writeFile('./db/Clientes.json', jsonEncode(_usuarios));
-    
     return nroCuenta;    
   }
 
+  ///Valida la existencia de un usuario recibiendo su numero de usuario.
   static bool verificaExistencia(num numero) {
     _cargarUsuarios();
     for (int i = 0; i < _usuarios.length; i++) {
@@ -85,6 +86,8 @@ class Cliente {
   ///retorna el nombre del cliente
   String getNombre() => _nombre!;
 
+
+  ///Retorna el nombre de un usuario, recibe el numero de la cuenta del usuario a buscar.
   static String? conseguirNombre(num numeroDeCuenta) {
     _cargarUsuarios();
     for (int i = 0; i < _usuarios.length; i++) {
@@ -94,8 +97,12 @@ class Cliente {
     }
   }
   
+
+  ///retorna el numero de cuenta del objeto actual.
   num getNroCuenta() => _nroCuenta!;
 
+  ///genera y retorna un numero que se puede usar para darle numero de cuenta a un nuevo usuario.
+  ///El numero es 1 mas que el último creado.
   static num ultimoNumeroDeCuenta() {
     _cargarUsuarios();
     num ultimaCuenta = _usuarios.length;

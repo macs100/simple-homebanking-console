@@ -14,7 +14,7 @@ void main() {
       }
     } on CierreBancoException {
       print('SERVICIO FINALIZADO');
-    }
+    } 
   } on FatalBancoException catch(err) {
     print("Hubo un error:");
     print(err);

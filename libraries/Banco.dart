@@ -19,7 +19,7 @@ class Banco {
   /// Objeto file controller
   FileController fileController = FileController();
 
-  /// Cargar configuración inicial del banco, iniciar 
+  /// Cargar configuración inicial del banco, iniciar, constructor.
   Banco() {
 
     String configBancoJSON;
@@ -35,6 +35,7 @@ class Banco {
     } catch (err) {
       throw FatalBancoException(err.toString());
     }
+    
     this._nombre = configBanco['nombreBanco'];
     this._origenMovimientos = configBanco['origenMovimientos'];
     FileController fileController = FileController();
@@ -58,7 +59,7 @@ class Banco {
     return this._nombre!;
   }
 
-  /// retorna el saldo del usuario
+  /// retorna el saldo del usuario, no lo imprime en pantalla, solo lo retorna.
   num getSaldo(num nroDeCuenta) {
     num contador = 0;
     for (int i = 0; i < _movimientos.length; i++) {
@@ -72,7 +73,7 @@ class Banco {
     return contador;
   }
   
-  /// Crea un movimiento y graba la transacción
+  /// Crea un movimiento y guarda la transacción en 'Movimientos.json'
   num nuevoMovimiento(num numeroDeCuentaOrigen, num numeroDeCuentaDestino, num monto, String fecha, String causa) {
     _movimientos.add({
       'origen': numeroDeCuentaOrigen == 0 ? 'depósito' : numeroDeCuentaOrigen,

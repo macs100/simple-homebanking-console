@@ -44,7 +44,6 @@ class Terminal {
     }
   }
 
-
   /// logear, registrar o entrar como incognito
   int inicio() {
     _titulo('¿Qué desea hacer?');
@@ -60,6 +59,7 @@ class Terminal {
     _info(_banco.getNombre());
   }
 
+  /// Ejecuta una funcion del usuario dependiendo de lo que este elija en "seleccionOpcion()"
   void runCliente() {
 
     _cliente = logIn()!;
@@ -76,7 +76,7 @@ class Terminal {
         case 3:
           extraerEfectivo();
           break;
-        case 4://sin codear
+        case 4://igual al 2
           depositarEfectivo();
           break;
         case 5://sin codear
@@ -277,15 +277,13 @@ class Terminal {
 
   }
 
-  /// 
+  ///  realiza una transferencia y verifica si puede 
   void realizarTransferencia() {
-    num monto;
+    num monto = _consultaNumerica('cuánto dinero desea enviar?', 1);
     String fecha = '';
     String causa = '';
-
-    monto = _consultaNumerica('cuánto dinero desea enviar?', 1);
-    
     num cuentaCliente = _cliente!.getNroCuenta();
+
     if (monto <= _banco.getSaldo(cuentaCliente)) {
       causa = _consulta('cual es la causa de la transferencia?');
 
@@ -300,7 +298,6 @@ class Terminal {
         } while (!Cliente.verificaExistencia(nroCuentaDestino));
         
         nombreCuentaDestino = Cliente.conseguirNombre(nroCuentaDestino)!;
-
         seRepite = num.tryParse(_consulta('desea realizar la transferencia a $nombreCuentaDestino?\n 1.Si \n 2.No'))!;
         
         if (seRepite == 1) {
@@ -319,8 +316,9 @@ class Terminal {
       }
       _success('extracción realizada con éxito.');
       _success('         Monto: $monto');
+    } else {
+      _danger('su saldo no es suficiente para realizar una transferencia de este monto');
     }
-
   }
 
 
